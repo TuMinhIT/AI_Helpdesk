@@ -1,0 +1,10 @@
+export type Pagination = {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+};
+
+export type PaginatedResult<T> = Pagination & {
+  items: T[];
+};
