@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bot, Send, Sparkles, User, FileText, CheckCircle2, ArrowRight, ShieldCheck, HelpCircle, Layers, Ticket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/app/store/authStore";
-import { hasAllowedRole, IT_ENGINEER_ROLES } from "@/components/admin/common/adminRoles";
+import { getAdminWorkspacePath, hasAllowedRole, IT_ENGINEER_ROLES } from "@/components/admin/common/adminRoles";
 
 type ChatMessage = {
   id: string;
@@ -74,6 +74,7 @@ const presetQuestions = [
 const AskAI = () => {
   const { user } = useAuth();
   const canAccessITWorkspace = hasAllowedRole(user?.role, IT_ENGINEER_ROLES);
+  const adminWorkspacePath = getAdminWorkspacePath(user?.role);
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -234,7 +235,7 @@ const AskAI = () => {
           {canAccessITWorkspace && (
             <div className="mt-4 border-t border-slate-800 pt-4 sm:pt-6">
               <Link
-                to="/admin/tickets"
+                to={adminWorkspacePath}
                 className="flex items-center justify-between rounded-xl bg-slate-800/80 p-3 text-xs font-semibold text-slate-300 transition-colors hover:bg-slate-800"
               >
                 <span>Xem IT Service Desk</span>

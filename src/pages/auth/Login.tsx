@@ -17,10 +17,7 @@ import { useAuth } from "@/app/store/authStore";
 import authService from "@/services/authService";
 import assets from "@/assets/index";
 import { AUTH_FEATURES } from "@/app/authFeatures";
-import { hasAllowedRole, IT_ENGINEER_ROLES } from "@/components/admin/common/adminRoles";
-
-const getWorkspacePath = (role?: string) =>
-  hasAllowedRole(role, IT_ENGINEER_ROLES) ? "/admin" : "/";
+import { getAdminWorkspacePath } from "@/components/admin/common/adminRoles";
 
 const service = authService();
 
@@ -36,7 +33,7 @@ const Login = () => {
 
   useEffect(() => {
     if (accessToken) {
-      navigate(getWorkspacePath(user?.role), { replace: true });
+      navigate(getAdminWorkspacePath(user?.role), { replace: true });
     }
   }, [accessToken, navigate, user?.role]);
 
@@ -55,7 +52,7 @@ const Login = () => {
       if (response.success && response.data?.accessToken) {
         login(response.data);
         toast.success("Đăng nhập thành công!");
-        navigate(getWorkspacePath(response.data.user?.role), { replace: true });
+        navigate(getAdminWorkspacePath(response.data.user?.role), { replace: true });
         return;
       }
 

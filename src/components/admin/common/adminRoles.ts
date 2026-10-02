@@ -29,3 +29,9 @@ export const hasAllowedRole = (role: string | undefined, allowedRoles: readonly 
   const normalizedRole = normalizeRole(role);
   return allowedRoles.some((allowedRole) => normalizeRole(allowedRole) === normalizedRole);
 };
+
+export const getAdminWorkspacePath = (role?: string) => {
+  if (hasAllowedRole(role, IT_MANAGER_ROLES)) return "/admin";
+  if (hasAllowedRole(role, IT_ENGINEER_ROLES)) return "/admin/tickets";
+  return "/";
+};

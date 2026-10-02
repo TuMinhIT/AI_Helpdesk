@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import {
   Bot,
   Home,
+  LayoutDashboard,
   LogIn,
   LogOut,
   Menu,
@@ -11,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useAuth } from "@/app/store/authStore";
+import { getAdminWorkspacePath, hasAllowedRole, IT_ENGINEER_ROLES } from "@/components/admin/common/adminRoles";
 import ShopName from "./ShopName";
 
 const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -22,6 +24,8 @@ const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { accessToken, user, logout } = useAuth();
+  const canAccessITWorkspace = hasAllowedRole(user?.role, IT_ENGINEER_ROLES);
+  const adminWorkspacePath = getAdminWorkspacePath(user?.role);
 
   const closeMobileMenu = () => setMobileOpen(false);
   const handleLogout = () => {
@@ -51,6 +55,16 @@ const Header = () => {
           >
             <Sparkles size={16} className="text-yellow-300" /> Employee AI Chat
           </NavLink>
+          {accessToken && canAccessITWorkspace && (
+            <Link
+              to={adminWorkspacePath}
+              title="Mở IT Workspace"
+              className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-cyan-50 hover:text-cyan-700"
+            >
+              <LayoutDashboard size={16} />
+              <span className="hidden xl:inline">IT Workspace</span>
+            </Link>
+          )}
         </nav>
 
         <div className="hidden items-center gap-2 sm:flex">
@@ -109,6 +123,15 @@ const Header = () => {
               <NavLink to="/ask-ai" onClick={closeMobileMenu} className={getNavLinkClass}>
                 <Bot size={17} className="text-cyan-600" /> Employee AI Chat
               </NavLink>
+              {accessToken && canAccessITWorkspace && (
+                <Link
+                  to={adminWorkspacePath}
+                  onClick={closeMobileMenu}
+                  className="inline-flex items-center gap-2 rounded-xl border border-cyan-100 bg-cyan-50 px-3 py-2 text-sm font-bold text-cyan-700"
+                >
+                  <LayoutDashboard size={17} /> Mở IT Workspace
+                </Link>
+              )}
               {accessToken ? (
                 <>
                   <Link

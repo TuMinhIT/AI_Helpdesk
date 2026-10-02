@@ -9,6 +9,8 @@ import ProfilePage from "@/pages/client/ProfilePage";
 import AdminLayout from "@/layouts/AdminLayout";
 import AdminRoute from "@/components/admin/common/AdminRoute";
 import {
+  getAdminWorkspacePath,
+  hasAllowedRole,
   IT_ENGINEER_ROLES,
   IT_MANAGER_ROLES,
   IT_STAFF_ROLES,
@@ -17,6 +19,14 @@ import OverViewPage from "@/pages/admin/OverViewPage";
 import KnowledgeBasePage from "@/pages/admin/KnowledgeBasePage";
 import ITServiceDeskPage from "@/pages/admin/ITServiceDeskPage";
 import AITicketAnalysisPage from "@/pages/admin/AITicketAnalysisPage";
+
+const AdminEntry = () => {
+  const { user } = useAuth();
+
+  if (hasAllowedRole(user?.role, IT_MANAGER_ROLES)) return <OverViewPage />;
+
+  return <Navigate to={getAdminWorkspacePath(user?.role)} replace />;
+};
 
 function AppRouter() {
   const { accessToken, isSessionReady } = useAuth();
@@ -43,10 +53,8 @@ function AppRouter() {
 
       <Route element={<AdminRoute allowedRoles={IT_STAFF_ROLES} />}>
         <Route path="admin" element={<AdminLayout />}>
-          <Route element={<AdminRoute allowedRoles={IT_MANAGER_ROLES} />}>
-            <Route index element={<OverViewPage />} />
-            <Route path="dashboard" element={<Navigate to="/admin" replace />} />
-          </Route>
+          <Route index element={<AdminEntry />} />
+          <Route path="dashboard" element={<Navigate to="/admin" replace />} />
 
           <Route element={<AdminRoute allowedRoles={IT_ENGINEER_ROLES} />}>
             <Route path="tickets" element={<ITServiceDeskPage />} />
